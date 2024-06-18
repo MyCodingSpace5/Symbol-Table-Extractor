@@ -21,7 +21,6 @@ Function* calling_function(void* function_ptr_t[], int len)
         b.ReturnType = typeid(function_ptr_t).name();
         bozo[i] = b;
     }
-    Function* m = (Function*)(bozo);
-    return m;
+    return (Function*)(bozo);
 }
 

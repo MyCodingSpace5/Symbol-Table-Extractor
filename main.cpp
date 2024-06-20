@@ -18,7 +18,6 @@ extern "C" __declspec(dllexport) Function* calling_function(void* function_ptr_t
         functions[i].Name = "Function " + std::to_string(i);
         functions[i].ReturnType = typeid(function_ptr_t[i]).name();
 
-        // Get the function pointer and call it to get the return value
         func_ptr func = reinterpret_cast<func_ptr>(function_ptr_t[i]);
         if (std::string(functions[i].ReturnType).find("int") != std::string::npos) {
             int result;

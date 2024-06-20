@@ -9,16 +9,29 @@ typedef void (*func_ptr)();
 struct Function {
     std::string Name;
     std::string ReturnType;
+    std::string Value;
 };
 
 extern "C" __declspec(dllexport) Function* calling_function(void* function_ptr_t[], int len) {
-    Function* bozo = new Function[len];
+    Function* functions = new Function[len];
     for (int i = 0; i < len; i++) {
-        const char* a = (char*)(function_ptr_t);
-        bozo[i].Name = a;
-        bozo[i].ReturnType = typeid(function_ptr_t).name();
+        functions[i].Name = "Function " + std::to_string(i);
+        functions[i].ReturnType = typeid(function_ptr_t[i]).name();
+
+        // Get the function pointer and call it to get the return value
+        func_ptr func = reinterpret_cast<func_ptr>(function_ptr_t[i]);
+        if (std::string(functions[i].ReturnType).find("int") != std::string::npos) {
+            int result;
+            func_ptr func = reinterpret_cast<func_ptr>(function_ptr_t[i]);
+            result = reinterpret_cast<int(*)()>(func)();
+            functions[i].Value = std::to_string(result);
+        } else if (std::string(functions[i].ReturnType).find("void") != std::string::npos) {
+            functions[i].Value = "void";
+        } else {
+            functions[i].Value = "Unknown";
+        }
     }
-    return bozo;
+    return functions;
 }
 
 extern "C" __declspec(dllexport) void** identify_function(int len) {
